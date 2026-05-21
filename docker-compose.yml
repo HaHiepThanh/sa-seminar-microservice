@@ -1,0 +1,195 @@
+name: seminar_final2
+
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq2
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql-catalog:
+    image: mysql:8.0
+    container_name: mysql-catalog2
+    environment:
+      MYSQL_ROOT_PASSWORD: "Quocnhan123@"
+      MYSQL_DATABASE: catalog_service
+    ports:
+      - "3316:3306"
+    volumes:
+      - ./ecom/catalogservice/catalogservice/init-catalog.sql:/docker-entrypoint-initdb.d/init-catalog.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pQuocnhan123@"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  mysql-inventory:
+    image: mysql:8.0
+    container_name: mysql-inventory2
+    environment:
+      MYSQL_ROOT_PASSWORD: "Quocnhan123@"
+      MYSQL_DATABASE: inventory_service
+    ports:
+      - "3317:3306"
+    volumes:
+      - ./ecom/inventory/init-inventory.sql:/docker-entrypoint-initdb.d/init-inventory.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pQuocnhan123@"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql-user:
+    image: mysql:8.0
+    container_name: mysql-user2
+    environment:
+      MYSQL_ROOT_PASSWORD: "Quocnhan123@"
+      MYSQL_DATABASE: user_service
+    ports:
+      - "3318:3306"
+    volumes:
+      - ./ecom/User/user_service/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pQuocnhan123@"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql-cart:
+    image: mysql:8.0
+    container_name: mysql-cart2
+    environment:
+      MYSQL_ROOT_PASSWORD: "Quocnhan123@"
+      MYSQL_DATABASE: cart_service
+    ports:
+      - "3319:3306"
+    volumes:
+      - ./ecom/microservice-cart/init-cart.sql:/docker-entrypoint-initdb.d/init-cart.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pQuocnhan123@"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql-order:
+    image: mysql:8.0
+    container_name: mysql-order2
+    environment:
+      MYSQL_ROOT_PASSWORD: "Quocnhan123@"
+      MYSQL_DATABASE: order_service
+    ports:
+      - "3320:3306"
+    volumes:
+      - ./ecom/order-payment-service/init-order.sql:/docker-entrypoint-initdb.d/init-order.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pQuocnhan123@"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq-setup:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-setup2
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: >
+      bash -c "
+      rabbitmqadmin -H rabbitmq -u guest -p guest declare exchange name=store.exchange type=direct &&
+      rabbitmqadmin -H rabbitmq -u guest -p guest declare queue name=order-email-queue durable=true &&
+      rabbitmqadmin -H rabbitmq -u guest -p guest declare queue name=inventory-queue durable=true &&
+      rabbitmqadmin -H rabbitmq -u guest -p guest declare binding source=store.exchange destination=order-email-queue routing_key=order.created &&
+      rabbitmqadmin -H rabbitmq -u guest -p guest declare binding source=store.exchange destination=inventory-queue routing_key=inventory.decrease
+      "
+
+  catalog-service:
+    image: hahiepthanh/ecom-catalog:latest
+    container_name: catalog-service2
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:mysql://mysql-catalog:3306/catalog_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - INVENTORY_GRPC_HOST=inventory-service
+      - JPA_DEFAULT_PROPERTIES_HIBERNATE_HBM2DDL_AUTO=none
+    depends_on:
+      mysql-catalog:
+        condition: service_healthy
+
+  inventory-service:
+    image: hahiepthanh/ecom-inventory:latest
+    container_name: inventory-service2
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:mysql://mysql-inventory:3306/inventory_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672
+      - JPA_DEFAULT_PROPERTIES_HIBERNATE_HBM2DDL_AUTO=none
+    depends_on:
+      mysql-inventory:
+        condition: service_healthy
+      rabbitmq-setup:
+        condition: service_completed_successfully
+
+  user-service:
+    image: hahiepthanh/ecom-user:latest
+    container_name: user-service2
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:mysql://mysql-user:3306/user_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - JPA_DEFAULT_PROPERTIES_HIBERNATE_HBM2DDL_AUTO=none
+    depends_on:
+      mysql-user:
+        condition: service_healthy
+
+  cart-service:
+    image: hahiepthanh/ecom-cart:latest
+    container_name: cart-service2
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:mysql://mysql-cart:3306/cart_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - JPA_DEFAULT_PROPERTIES_HIBERNATE_HBM2DDL_AUTO=none
+    depends_on:
+      mysql-cart:
+        condition: service_healthy
+
+  order-service:
+    image: hahiepthanh/ecom-order:latest
+    container_name: order-service2
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:mysql://mysql-order:3306/order_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672
+      - INVENTORY_GRPC_HOST=inventory-service
+      - JPA_DEFAULT_PROPERTIES_HIBERNATE_HBM2DDL_AUTO=none
+    depends_on:
+      mysql-order:
+        condition: service_healthy
+      rabbitmq-setup:
+        condition: service_completed_successfully
+
+  mail-service:
+    image: hahiepthanh/ecom-mail:latest
+    container_name: mail-service2
+    environment:
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      rabbitmq-setup:
+        condition: service_completed_successfully
+
+  nginx-gateway:
+    image: hahiepthanh/ecom-gateway:latest
+    container_name: nginx-gateway2
+    restart: on-failure
+    ports:
+      - "8080:80"
+    volumes:
+      - ./ecom-fe:/usr/share/nginx/html
+    depends_on:
+      - catalog-service
+      - inventory-service
+      - user-service
+      - cart-service
+      - order-service
