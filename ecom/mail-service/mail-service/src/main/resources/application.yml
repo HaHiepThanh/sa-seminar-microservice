@@ -1,0 +1,13 @@
+mail:
+  smtp:
+    host: smtp.gmail.com
+    port: 465
+    username: "phucdzqq@gmail.com"
+    password: "oqsvfxxiyzsaboro"
+
+micronaut:
+  server:
+    port: 8086
+
+rabbitmq:
+  uri: amqp://guest:guest@localhost:5672

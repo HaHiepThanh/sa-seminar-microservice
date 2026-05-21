@@ -1,0 +1,57 @@
+micronaut:
+  server:
+    port: 8081
+    cors:
+      enabled: true
+  application:
+    name: catalogservice
+  security:
+    authentication: bearer
+    enabled: false
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: "${JWT_GENERATOR_SIGNATURE_SECRET:a3f1c2e48b7d4f11c2aa123456789abc5d3e2f16b7c4d8e9f00abcdef123456}"
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+      jsonschema:
+        paths: classpath:META-INF/schemas
+        mapping: /schemas/**
+      my-images:
+        paths: file:C:\Users\PC\Desktop\MiniStore-1.0.0\images
+        mapping: /images/**
+datasources:
+  default:
+    url: jdbc:mysql://localhost:3306/catalog_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    db-type: mysql
+    username: root
+    password: Quocnhan123@
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+      baseline-on-migrate: true
+
+      grpc-plugin:
+        version: "1.64.0"
+      protobuf:
+        version: "3.25.3"
+rabbitmq:
+  uri: amqp://localhost:5672
+  username: guest
+  password: guest
+
+grpc:
+  server:
+    port: 50052
+

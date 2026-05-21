@@ -1,0 +1,108 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/Users/thanhhhtt/.m2/wrapper/dists/apache-maven-3.9.13-bin/6afe068c/apache-maven-3.9.13/lib/jansi-2.4.2.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.example:cart:jar:0.1
+[WARNING] 'dependencyManagement.dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: com.vladsch.flexmark:flexmark-html2md-converter:jar -> version ${html2md.converter.version} vs ${flexmark.version} @ io.micronaut.platform:micronaut-platform:4.10.11, /Users/thanhhhtt/.m2/repository/io/micronaut/platform/micronaut-platform/4.10.11/micronaut-platform-4.10.11.pom, line 3132, column 19
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] --------------------------< com.example:cart >--------------------------
+[INFO] Building cart 0.1
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> mn:4.11.6:run (default-cli) > process-classes @ cart >>>
+[INFO] 
+[INFO] --- enforcer:3.6.2:enforce (micronaut-enforce) @ cart ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 1: io.micronaut.maven.enforcer.CheckSnakeYaml passed
+[INFO] 
+[INFO] --- mn:4.11.6:generate-import-factory (default-generate-import-factory) @ cart ---
+[INFO] 
+[INFO] --- mn:4.11.6:generate-openapi-generic (default-generate-openapi-generic) @ cart ---
+[INFO] 
+[INFO] --- mn:4.11.6:generate-openapi-client (default-generate-openapi-client) @ cart ---
+[INFO] 
+[INFO] --- mn:4.11.6:generate-openapi-server (default-generate-openapi-server) @ cart ---
+[INFO] 
+[INFO] --- mn:4.11.6:generate-jsonschema (default-generate-jsonschema) @ cart ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ cart ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ cart ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< mn:4.11.6:run (default-cli) < process-classes @ cart <<<
+[INFO] 
+[INFO] 
+[INFO] --- mn:4.11.6:run (default-cli) @ cart ---
+[INFO] 👀 Watching for changes in [src/main/java, src/main/resources]
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+[36m08:24:20.474[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+[36m08:24:21.531[0;39m [1;30m[main][0;39m [1;31mERROR[0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Error starting Micronaut server: Bean definition [javax.sql.DataSource] could not be loaded: Error instantiating bean of type  [javax.sql.DataSource]
+
+Message: Failed to initialize pool: Access denied for user 'root'@'localhost' (using password: NO)
+Path Taken:
+@i.m.c.a.Context j.s.DataSource i.m.c.j.h.DatasourceFactory.dataSource#dataSource(DatasourceConfiguration datasourceConfiguration)
+io.micronaut.context.exceptions.BeanInstantiationException: Bean definition [javax.sql.DataSource] could not be loaded: Error instantiating bean of type  [javax.sql.DataSource]
+
+Message: Failed to initialize pool: Access denied for user 'root'@'localhost' (using password: NO)
+Path Taken:
+@i.m.c.a.Context j.s.DataSource i.m.c.j.h.DatasourceFactory.dataSource#dataSource(DatasourceConfiguration datasourceConfiguration)
+	at io.micronaut.context.DefaultBeanContext.initializeContext(DefaultBeanContext.java:2045)
+	at io.micronaut.context.DefaultApplicationContext.initializeContext(DefaultApplicationContext.java:323)
+	at io.micronaut.context.DefaultBeanContext.configureAndStartContext(DefaultBeanContext.java:3362)
+	at io.micronaut.context.DefaultBeanContext.start(DefaultBeanContext.java:345)
+	at io.micronaut.context.DefaultApplicationContext.start(DefaultApplicationContext.java:225)
+	at io.micronaut.runtime.Micronaut.start(Micronaut.java:75)
+	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
+	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
+	at com.example.Application.main(Application.java:16)
+Caused by: io.micronaut.context.exceptions.BeanInstantiationException: Error instantiating bean of type  [javax.sql.DataSource]
+
+Message: Failed to initialize pool: Access denied for user 'root'@'localhost' (using password: NO)
+Path Taken:
+@i.m.c.a.Context j.s.DataSource i.m.c.j.h.DatasourceFactory.dataSource#dataSource(DatasourceConfiguration datasourceConfiguration)
+	at io.micronaut.context.DefaultBeanContext.resolveByBeanFactory(DefaultBeanContext.java:2357)
+	at io.micronaut.context.DefaultBeanContext.createRegistration(DefaultBeanContext.java:3162)
+	at io.micronaut.context.SingletonScope.getOrCreate(SingletonScope.java:80)
+	at io.micronaut.context.DefaultBeanContext.intializeEagerBean(DefaultBeanContext.java:3051)
+	at io.micronaut.context.DefaultBeanContext.initializeEagerBean(DefaultBeanContext.java:2711)
+	at io.micronaut.context.DefaultBeanContext.initializeContext(DefaultBeanContext.java:2039)
+	... 8 common frames omitted
+Caused by: com.zaxxer.hikari.pool.HikariPool$PoolInitializationException: Failed to initialize pool: Access denied for user 'root'@'localhost' (using password: NO)
+	at com.zaxxer.hikari.pool.HikariPool.throwPoolInitializationException(HikariPool.java:610)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:597)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:80)
+	at io.micronaut.configuration.jdbc.hikari.HikariUrlDataSource.<init>(HikariUrlDataSource.java:35)
+	at io.micronaut.configuration.jdbc.hikari.DatasourceFactory.dataSource(DatasourceFactory.java:68)
+	at io.micronaut.configuration.jdbc.hikari.$DatasourceFactory$DataSource0$Definition.instantiate(Unknown Source)
+	at io.micronaut.context.BeanDefinitionDelegate.instantiate(BeanDefinitionDelegate.java:183)
+	at io.micronaut.context.DefaultBeanContext.resolveByBeanFactory(DefaultBeanContext.java:2342)
+	... 13 common frames omitted
+Caused by: java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: NO)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:839)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:415)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:180)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:370)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:207)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576)
+	... 20 common frames omitted

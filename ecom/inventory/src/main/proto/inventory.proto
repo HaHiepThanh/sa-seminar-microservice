@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.shop.inventory.grpc";
+
+service InventoryService {
+
+  // Unary
+  rpc CheckStock (StockRequest) returns (StockResponse);
+  rpc ReserveStock (ReserveRequest) returns (ReserveResponse);
+
+  // Streaming
+  rpc SubscribeGroupBuy (GroupBuyRequest) returns (stream GroupBuyProgress);
+}
+
+message StockRequest {
+  string product_id = 1;
+}
+
+message StockResponse {
+  string product_id = 1;
+  int32 available_quantity = 2;
+}
+
+message ReserveRequest {
+  string product_id = 1;
+  int32 amount = 2;
+}
+
+message ReserveResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GroupBuyRequest {
+  string product_id = 1;
+}
+
+message GroupBuyProgress {
+  string product_id = 1;
+  int32 current_quantity = 2;
+  int32 target_quantity = 3;
+  string status = 4;
+}
